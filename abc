@@ -1,0 +1,27 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
+weather=pd.read_csv(r'C:\Users\Vinh Hoa Tu\Downloads/london_weather123.csv')
+print(weather.head())
+print(weather.info())
+sunshine=weather[['date', 'sunshine']]
+print(sunshine)
+sunshine['date']=sunshine['date'].astype(str)
+sd = sunshine[sunshine['date'].str.endswith(('01','15'))] # only keep date 01 and 15
+sd= sd.reset_index() #reset the indice of dataframe
+sd=sd.drop('index',axis=1)
+#show sd
+plt.figure(figsize=(20,8))
+plt.plot(sd['sunshine'])
+plt.title('Sunshine as a function of time')
+plt.xlabel('Time')
+plt.ylabel('Sunshine')
+plt.show()
+mean=sd['sunshine'].mean()
+variance=sd['sunshine'].var()
+print(f'Moyenne : {mean}, Variance :{variance}')
+#decompose the serie into trend, seasonal, residual and stationary serie
+from statsmodels.tsa.seasonal import seasonal_decompose
+result= seasonal_decompose(sd['sunshine'], model='additive',period=24)
+result.plot()
+plt.show()
